@@ -1,0 +1,17 @@
+2020-01-12 17:32:15,223 INFO supervisord started with pid 1
+2020-01-12 17:32:16,225 INFO spawned: 'php-fpm' with pid 7
+2020-01-12 17:32:16,228 INFO spawned: 'laravel-worker' with pid 8
+2020-01-12 17:32:16,230 INFO spawned: 'horizon' with pid 9
+2020-01-12 17:32:17,232 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-01-12 17:32:17,232 INFO success: laravel-worker entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-01-12 17:32:17,232 INFO success: horizon entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2020-01-12 17:32:20,221 INFO exited: horizon (exit status 1; not expected)
+2020-01-12 17:32:21,227 INFO spawned: 'horizon' with pid 24
+2020-01-12 17:32:21,542 INFO exited: horizon (exit status 1; not expected)
+2020-01-12 17:32:22,547 INFO spawned: 'horizon' with pid 31
+2020-01-12 17:32:22,766 INFO exited: horizon (exit status 1; not expected)
+2020-01-12 17:32:24,771 INFO spawned: 'horizon' with pid 38
+2020-01-12 17:32:24,993 INFO exited: horizon (exit status 1; not expected)
+2020-01-12 17:32:28,001 INFO spawned: 'horizon' with pid 45
+2020-01-12 17:32:28,234 INFO exited: horizon (exit status 1; not expected)
+2020-01-12 17:32:29,235 INFO gave up: horizon entered FATAL state, too many start retries too quickly
