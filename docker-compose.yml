@@ -1,0 +1,95 @@
+services:
+  php-fpm:
+    build:
+      context: ./
+      dockerfile: ./php/Dockerfile
+    user: '1000:1000'
+    volumes:
+      - ./webapp:/var/www/html
+      - ./php/supervisord.conf:/etc/supervisord.conf
+      - ./php/php.ini-development:/usr/local/etc/php/php.ini-development
+      - ./php/php.ini-production:/usr/local/etc/php/php.ini-production
+      #   - ./php/docker-php-ext-sodium.ini:/usr/local/etc/php/conf.d/docker-php-ext-sodium.ini
+    networks:
+      - clisoft-network
+    depends_on:
+      - pgsql
+      - redis
+  nginx:
+    image: nginx:1.27.1-alpine
+    ports:
+      - '8080:80'
+    volumes:
+      - ./webapp:/var/www/html
+      - ./nginx/site.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - clisoft-network
+    depends_on:
+      - php-fpm
+  pgsql:
+    image: postgres:17.0-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: clisoft
+      POSTGRES_PASSWORD: clisoft
+      POSTGRES_DB: clisoft
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - 54323:5432
+    networks:
+      - clisoft-network
+  redis:
+    image: redis:7.4-alpine
+    ports:
+      - 6379:6379
+    networks:
+      - clisoft-network
+  node:
+    image: node:20.17.0-alpine
+    working_dir: /home/node/app
+    volumes:
+      - ./webapp:/home/node/app
+    environment:
+      NPM_CONFIG_LOGLEVEL: info
+    tty: true
+    command: /bin/sh -c "yarn install && yarn run build"
+    networks:
+      - clisoft-network
+  mongo:
+    image: mongo:8.0
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: clisoft
+      MONGO_INITDB_ROOT_PASSWORD: clisoft
+      MONGO_INITDB_DATABASE: clisoft
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - clisoft-network
+  composer:
+    image: composer:latest
+    container_name: app_composer
+    working_dir: /var/www/html
+    volumes:
+      - ./webapp/:/var/www/html
+    networks:
+      - clisoft-network
+    command: ["composer", "install"]
+  # golang:
+  #   build:
+  #     context: ./golang
+  #     dockerfile: ./Dockerfile
+  #   ports:
+  #     - 4500:4800
+  #   environment:
+  #     ENVIRONMENT: "DEV"
+volumes:
+  postgres-data:
+  mongo-data:
+networks:
+  clisoft-network:
+    driver: bridge
